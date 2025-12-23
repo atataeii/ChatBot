@@ -1,7 +1,7 @@
 package chatbot.strategies;
 
-import chatbot.core.ChatResponse;
-import chatbot.core.Message;
+import chatbot.app.core.ChatResponse;
+import chatbot.app.core.Message;
 
 public class NormalStrategy implements ResponseStrategy {
     @Override

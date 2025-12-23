@@ -1,4 +1,4 @@
-package chatbot.core;
+package chatbot.app.core;
 
 import java.time.Instant;
 

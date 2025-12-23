@@ -1,65 +1,49 @@
-package chatbot.core;
+package chatbot.app.core;
 
-import chatbot.state.ChatState;
-import chatbot.state.NormalState;
+import chatbot.commands.Command;
+import chatbot.factory.CommandFactory;
 
 import java.util.Scanner;
 
 public class ChatbotEngine {
 
-    private ChatState state = new NormalState();
+    private final Context context = new Context();
+    private final CommandFactory commandFactory = new CommandFactory();
 
     public void start() {
-        System.out.println("=== Console Chatbot ===");
-        System.out.println("Type /help for commands, or 'exit' to quit.");
-
         Scanner scanner = new Scanner(System.in);
+        System.out.println("Console Chatbot started. Type /help.");
 
         while (true) {
             System.out.print("You: ");
-            String input = scanner.nextLine();
+            String input = scanner.nextLine().trim();
 
-            if (input == null) continue;
-            input = input.trim();
-
-            if (input.equalsIgnoreCase("exit") || input.equalsIgnoreCase("quit")) {
-                System.out.println("Bot: Bye! 👋");
+            if (input.equalsIgnoreCase("exit")) {
+                System.out.println("Bot: Bye!");
                 break;
             }
 
             Message msg = new Message(input);
 
-            // Help command
-            if (msg.text().equalsIgnoreCase("/help")) {
-                System.out.println("Bot: Commands:\n" +
-                        "- /help\n" +
-                        "- /mode            (show current mode)\n" +
-                        "- /mode normal\n" +
-                        "- /mode study\n" +
-                        "- /mode support\n" +
-                        "- exit");
+            // 1️⃣ Try command first (Factory)
+            Command cmd = commandFactory.getCommand(msg);
+            if (cmd != null) {
+                ChatResponse res = cmd.execute(msg, context);
+                print(res);
                 continue;
             }
 
-            // Show current mode
-            if (msg.text().equalsIgnoreCase("/mode")) {
-                System.out.println("Bot: Current mode is " + state.name());
-                continue;
-            }
-
-            // Update state (State pattern)
-            ChatState newState = state.handle(msg);
-            if (newState != state) {
-                state = newState;
-                System.out.println("Bot: Mode switched to " + state.name());
-                continue;
-            }
-
-            // Respond using the strategy inside state (Strategy pattern)
-            ChatResponse response = state.respond(msg);
-            System.out.println("Bot: " + response.text());
+            // 2️⃣ Otherwise: State + Strategy
+            context.setState(context.getState().handle(msg));
+            ChatResponse res = context.getState().respond(msg);
+            print(res);
         }
+    }
 
-        scanner.close();
+    private void print(ChatResponse res) {
+        System.out.println("Bot: " + res.text());
+        if (!res.suggestions().isEmpty()) {
+            System.out.println("Suggestions: " + res.suggestions());
+        }
     }
 }
