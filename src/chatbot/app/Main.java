@@ -1,6 +1,6 @@
 package chatbot.app;
 
-import chatbot.core.ChatbotEngine;
+import chatbot.app.core.ChatbotEngine;
 
 public class Main {
     public static void main(String[] args) {

@@ -1,13 +1,21 @@
-package chatbot.core;
+package chatbot.app.core;
+
+import java.util.List;
 
 public class ChatResponse {
     private final String text;
+    private final List<String> suggestions;
 
-    public ChatResponse(String text) {
+    ChatResponse(String text, List<String> suggestions) {
         this.text = text;
+        this.suggestions = suggestions;
     }
 
     public String text() {
         return text;
+    }
+
+    public List<String> suggestions() {
+        return suggestions;
     }
 }
