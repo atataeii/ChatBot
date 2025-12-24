@@ -1,4 +1,4 @@
-package chatbot.app.core;
+package chatbot.core;
 
 import chatbot.commands.Command;
 import chatbot.factory.CommandFactory;

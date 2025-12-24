@@ -1,7 +1,7 @@
 package chatbot.factory;
 
 import chatbot.commands.*;
-import chatbot.app.core.Message;
+import chatbot.core.Message;
 
 import java.util.List;
 

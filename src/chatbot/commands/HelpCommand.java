@@ -1,9 +1,9 @@
 package chatbot.commands;
 
-import chatbot.app.core.ChatResponse;
-import chatbot.app.core.ChatResponseBuilder;
-import chatbot.app.core.Context;
-import chatbot.app.core.Message;
+import chatbot.core.ChatResponse;
+import chatbot.core.ChatResponseBuilder;
+import chatbot.core.Context;
+import chatbot.core.Message;
 
 public class HelpCommand implements Command {
 
@@ -16,12 +16,12 @@ public class HelpCommand implements Command {
     public ChatResponse execute(Message msg, Context ctx) {
         return new ChatResponseBuilder()
                 .text("Commands:\n" +
-                        "- /help\n" +
-                        "- /mode\n" +
-                        "- /mode normal\n" +
-                        "- /mode study\n" +
-                        "- /mode support\n" +
-                        "- exit")
+                      "- /help\n" +
+                      "- /mode\n" +
+                      "- /mode normal\n" +
+                      "- /mode study\n" +
+                      "- /mode support\n" +
+                      "- exit")
                 .addSuggestion("/mode study")
                 .build();
     }
