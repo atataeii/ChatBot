@@ -1,9 +1,9 @@
 package chatbot.commands;
 
-import chatbot.app.core.ChatResponse;
-import chatbot.app.core.ChatResponseBuilder;
-import chatbot.app.core.Context;
-import chatbot.app.core.Message;
+import chatbot.core.ChatResponse;
+import chatbot.core.ChatResponseBuilder;
+import chatbot.core.Context;
+import chatbot.core.Message;
 import chatbot.state.NormalState;
 import chatbot.state.StudyState;
 import chatbot.state.SupportState;

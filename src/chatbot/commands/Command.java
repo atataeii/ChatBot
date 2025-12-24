@@ -1,8 +1,8 @@
 package chatbot.commands;
 
-import chatbot.app.core.ChatResponse;
-import chatbot.app.core.Context;
-import chatbot.app.core.Message;
+import chatbot.core.ChatResponse;
+import chatbot.core.Context;
+import chatbot.core.Message;
 
 public interface Command {
     boolean matches(Message msg);

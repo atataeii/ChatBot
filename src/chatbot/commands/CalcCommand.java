@@ -1,9 +1,9 @@
 package chatbot.commands;
 
-import chatbot.app.core.ChatResponse;
-import chatbot.app.core.ChatResponseBuilder;
-import chatbot.app.core.Context;
-import chatbot.app.core.Message;
+import chatbot.core.ChatResponse;
+import chatbot.core.ChatResponseBuilder;
+import chatbot.core.Context;
+import chatbot.core.Message;
 
 public class CalcCommand implements Command {
 
@@ -18,7 +18,7 @@ public class CalcCommand implements Command {
             String expr = msg.text().replace("/calc", "").trim();
             String[] parts = expr.split("\\+");
             int result = Integer.parseInt(parts[0].trim())
-                    + Integer.parseInt(parts[1].trim());
+                       + Integer.parseInt(parts[1].trim());
 
             return new ChatResponseBuilder()
                     .text("Result: " + result)
