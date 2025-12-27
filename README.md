@@ -1,130 +1,245 @@
-# Java Console Chatbot — Design Patterns Assignment
+# 🤖 Java Console Chatbot — Design Patterns Assignment
 
-A simple, coherent Java *console-based chatbot* built for the Design Patterns assignment.  
-The chatbot reads user input from the terminal, supports basic commands, and demonstrates *active design patterns* in the program flow (not just as unused classes).
+✨ A coherent **Java console-based chatbot** built for the Design Patterns assignment.
+
+The chatbot reads user input from the terminal, supports multiple commands and modes, and demonstrates **active usage of multiple design patterns** from different categories (**behavioural**, **creational**, **structural**).
+
+✅ All patterns are integrated into the **runtime flow** of the application and are **not** merely present as unused example classes.
 
 ---
 
-## How to Run
+## ▶️ How to Run
 
-### Option A — Run in an IDE (IntelliJ / VS Code)
+### 🧠 Option A — Run in an IDE (IntelliJ / VS Code)
+
 1. Open the project in your IDE.
 2. Run the `Main` class:
-    - src/chatbot/app/Main.java
+    - `src/chatbot/app/Main.java`
 
-### Option B — Run via Terminal (javac/java)
+### 💻 Option B — Run via Terminal (javac / java)
 
 From the project root (PowerShell – Windows):
 
-    mkdir out
-    javac -d out (Get-ChildItem -Recurse -Filter *.java | ForEach-Object { $_.FullName })
-    java -cp out chatbot.app.Main
+```powershell
+mkdir out
+javac -d out (Get-ChildItem -Recurse -Filter *.java | ForEach-Object { $_.FullName })
+java -cp out chatbot.app.Main
+```
 
 ---
 
-## Program Features (Current)
+## ✨ Program Features
 
-- Console input/output loop (chat-style)
-- `exit` / `quit` to stop the program
-- `/help` shows available commands
-- Chatbot modes using `/mode ...` commands:
+- 🔁 Console-based chat loop
+- ⛔ `exit` / `quit` to stop the program
+- 📖 `/help` command listing available commands
+- 🎭 Chatbot modes:
     - `/mode` → show current mode
     - `/mode normal`
     - `/mode study`
     - `/mode support`
-- The chatbot responds differently depending on the active mode
+- 🎨 Different response styles depending on the active mode
+- 🧩 Additional commands:
+    - `/calc 2+3`
+    - `/joke` (via adapted external service)
 
 ---
 
-## Example Session
+## 💬 Example Session
 
-    === Console Chatbot ===
-    Type /help for commands, or 'exit' to quit.
+```
+Console Chatbot started. Type /help.
 
-    You: /mode
-    Bot: Current mode is NORMAL
+You: /mode
+Bot: Current mode is NORMAL
 
-    You: hi
-    Bot: You said: hi
+You: hi
+🤖 [12:30:10] Bot: You said: hi
 
-    You: /mode study
-    Bot: Mode switched to STUDY
+You: /mode study
+🤖 [12:30:15] Bot: Mode switched to STUDY
 
-    You: explain photosynthesis
-    Bot: 📚 Study mode: Let's break it down. You said: explain photosynthesis
+You: explain photosynthesis
+🤖 [12:30:20] Bot: 📚 Study mode: Let's break it down. You said: explain photosynthesis
 
-    You: /mode support
-    Bot: Mode switched to SUPPORT
+You: /mode support
+🤖 [12:30:25] Bot: Mode switched to SUPPORT
 
-    You: I feel stressed
-    Bot: 🫶 Support mode: I hear you. You said: I feel stressed
+You: I feel stressed
+🤖 [12:30:30] Bot: 🫶 Support mode: I hear you. You said: I feel stressed
+Suggestions: [/mode normal]
 
-    You: exit
-    Bot: Bye! 👋
+You: /joke
+🤖 [12:30:35] Bot: Why did the programmer quit his job? Because he didn't get arrays
+
+You: exit
+Bot: Bye!
+```
 
 ---
 
-## Design Patterns Implemented (Up to Phase 3)
+## 🧠 Design Patterns Implemented
 
-### 1) State Pattern (Behavioural)
+### 🧩 Behavioural Patterns
+
+#### 1️⃣ State Pattern
 
 **Problem**  
-The chatbot needs to support multiple modes (NORMAL / STUDY / SUPPORT) with clean transitions, without turning the engine into a giant if-else mess.
+The chatbot must support multiple modes (**NORMAL / STUDY / SUPPORT**) with different behavior and clean transitions, without turning the engine into a large conditional structure.
 
 **Solution**  
-Each mode is represented as its own state class.  
+Each mode is represented as a separate state class.  
 The chatbot engine keeps a reference to the current state and delegates:
-
-- transition logic (switching modes) to the state via `handle(...)`
-- response creation to the state via `respond(...)`
-
-This keeps mode-specific logic encapsulated and makes the chatbot easy to extend with new modes.
+- state transitions via `handle(Message)`
+- response creation via `respond(Message)`
 
 **Where in code**
-- State interface and states: src/chatbot/state/*
-    - ChatState
-    - NormalState, StudyState, SupportState
-    - (optional helper) BaseState
+- `src/chatbot/state/`
+    - `ChatState`
+    - `NormalState`, `StudyState`, `SupportState`
+    - `BaseState`
+
+**Why it fits**  
+A chatbot naturally operates in different conversational modes, making the State pattern a clean and maintainable solution.
 
 ---
 
-### 2) Strategy Pattern (Behavioural)
+#### 2️⃣ Strategy Pattern
 
 **Problem**  
-Each chatbot mode should respond in a different style (normal echo, study-helper tone, supportive tone). We want to change response behavior without rewriting the engine.
+Each chatbot mode should respond in a different style (neutral, study-focused, supportive), and these behaviors should be interchangeable.
 
 **Solution**  
-Each mode uses a strategy that generates responses.  
-Strategies are interchangeable implementations of the same interface:
+Response generation is delegated to strategy implementations:
+- `NormalStrategy`
+- `StudyStrategy`
+- `SupportStrategy`
 
-- NormalStrategy
-- StudyStrategy
-- SupportStrategy
-
-The current state delegates response generation to its strategy, keeping behavior modular and swappable.
+Each state uses a specific strategy to generate its responses.
 
 **Where in code**
-- Strategy interface and implementations: src/chatbot/strategies/*
-    - ResponseStrategy
-    - NormalStrategy, StudyStrategy, SupportStrategy
+- `src/chatbot/strategies/`
+    - `ResponseStrategy`
+    - `NormalStrategy`, `StudyStrategy`, `SupportStrategy`
+
+**Why it fits**  
+Strategies allow response behavior to vary independently from the chatbot engine and state logic.
 
 ---
 
-## Architecture (Current)
+### 🏗️ Creational Patterns
 
-- `Main` starts the program.
+#### 3️⃣ Factory Method (Command Factory)
+
+**Problem**  
+The chatbot must handle multiple commands (`/help`, `/mode`, `/calc`, `/joke`) without hardcoding command logic in the engine.
+
+**Solution**  
+A `CommandFactory` determines which command should handle a given message.  
+Each command implements a common interface and encapsulates its own behavior.
+
+**Where in code**
+- `src/chatbot/commands/`
+- `src/chatbot/factory/CommandFactory.java`
+
+**Why it fits**  
+Commands are created and selected dynamically based on user input, which is a classic use case for the Factory Method pattern.
+
+---
+
+#### 4️⃣ Builder Pattern (ChatResponseBuilder)
+
+**Problem**  
+Chatbot responses may consist of more than just text (e.g. suggestions, metadata).
+
+**Solution**  
+The `ChatResponseBuilder` constructs immutable `ChatResponse` objects using a fluent API.
+
+**Where in code**
+- `src/chatbot/core/ChatResponse`
+- `src/chatbot/core/ChatResponseBuilder`
+
+**Why it fits**  
+The Builder pattern makes response construction flexible, readable, and extensible.
+
+---
+
+### 🧱 Structural Patterns
+
+#### 5️⃣ Adapter Pattern
+
+**Problem**  
+An external joke service returns data in an incompatible format.
+
+**Solution**  
+A `JokeServiceAdapter` adapts the external API to a clean internal interface used by the chatbot.
+
+**Where in code**
+- `src/chatbot/integrations/`
+    - `ExternalJokeApi`
+    - `JokeService`
+    - `JokeServiceAdapter`
+
+**Why it fits**  
+Adapters allow external systems to be integrated without modifying the chatbot core.
+
+---
+
+#### 6️⃣ Decorator Pattern
+
+**Problem**  
+Additional response behavior (timestamps, emojis) should be added without modifying core rendering logic.
+
+**Solution**  
+Response rendering is wrapped in decorators that dynamically add behavior before output.
+
+**Where in code**
+- `src/chatbot/decorators/`
+    - `ResponseRenderer`
+    - `BaseRenderer`
+    - `TimestampDecorator`
+    - `EmojiDecorator`
+
+**Why it fits**  
+Decorators allow dynamic extension of behavior without changing existing classes.
+
+---
+
+## 🏛️ Architecture Overview
+
+- `Main` starts the application.
 - `ChatbotEngine`:
     - reads console input
-    - creates a `Message`
-    - passes it to the current `ChatState`
-    - prints the produced `ChatResponse`
-- `Message` holds the user text (+ timestamp).
-- `ChatResponse` holds the bot output text (currently simple; will be extended later).
+    - delegates commands to `CommandFactory`
+    - delegates conversation handling to State + Strategy
+    - renders responses using Decorators
+- `Context` maintains the current chatbot state.
+- All patterns are part of the active execution flow.
 
 ---
 
-## Notes
+## 🤝 Cooperation
 
-- This project is intentionally kept console-based as required by the assignment.
-- The patterns listed above are **active in runtime flow**: mode transitions and response generation depend on State + Strategy logic.
-- Additional design patterns from other categories (creational, structural) will be integrated in later phases.
+This project was developed **in pairs**:
+
+### 👨‍💻 Matin
+- Core architecture
+- Chatbot engine
+- Behavioural patterns (State, Strategy)
+- Integration of Factory, Builder, Adapter, and Decorator patterns
+
+### 👨‍💻 Mohammad
+- Command system
+- Creational patterns (Factory Method, Builder)
+- Structural patterns (Adapter, Decorator components)
+
+Development was managed via **GitHub** using a shared repository.  
+Both team members contributed regularly with separate commits, ensuring a **balanced workload**.
+
+---
+
+## 📝 Notes
+
+- The application is intentionally console-based as required by the assignment.
+- All design patterns are **actively used during runtime**.
+- The chatbot has a single coherent purpose and avoids artificial pattern bundling.
