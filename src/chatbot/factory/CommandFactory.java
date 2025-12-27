@@ -10,7 +10,8 @@ public class CommandFactory {
     private final List<Command> commands = List.of(
             new HelpCommand(),
             new ModeCommand(),
-            new CalcCommand()
+            new CalcCommand(),
+            new JokeCommand()
     );
 
     public Command getCommand(Message msg) {

@@ -1,6 +1,7 @@
 package chatbot.core;
 
 import chatbot.commands.Command;
+import chatbot.decorators.*;
 import chatbot.factory.CommandFactory;
 
 import java.util.Scanner;
@@ -9,6 +10,14 @@ public class ChatbotEngine {
 
     private final Context context = new Context();
     private final CommandFactory commandFactory = new CommandFactory();
+
+    // Phase 5: Decorator chain
+    private final ResponseRenderer renderer =
+            new EmojiDecorator(
+                    new TimestampDecorator(
+                            new BaseRenderer()
+                    )
+            );
 
     public void start() {
         Scanner scanner = new Scanner(System.in);
@@ -25,25 +34,18 @@ public class ChatbotEngine {
 
             Message msg = new Message(input);
 
-            // 1️⃣ Try command first (Factory)
+            // 1) Try command first (Factory)
             Command cmd = commandFactory.getCommand(msg);
             if (cmd != null) {
                 ChatResponse res = cmd.execute(msg, context);
-                print(res);
+                renderer.render(res);
                 continue;
             }
 
-            // 2️⃣ Otherwise: State + Strategy
+            // 2) Otherwise: State + Strategy
             context.setState(context.getState().handle(msg));
             ChatResponse res = context.getState().respond(msg);
-            print(res);
-        }
-    }
-
-    private void print(ChatResponse res) {
-        System.out.println("Bot: " + res.text());
-        if (!res.suggestions().isEmpty()) {
-            System.out.println("Suggestions: " + res.suggestions());
+            renderer.render(res);
         }
     }
 }
