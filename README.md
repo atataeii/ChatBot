@@ -217,6 +217,12 @@ Decorators allow dynamic extension of behavior without changing existing classes
 - All patterns are part of the active execution flow.
 
 ---
+## Class Diagram
+
+<img width="1619" height="1139" alt="image" src="https://github.com/user-attachments/assets/dc22416e-476d-4457-8582-f3e8a1171fa6" />
+
+The class diagram shows the main structure of the chatbot and how the design patterns work together. ChatbotEngine controls the flow of the application, while commands are created using a factory and chatbot behavior changes using the State and Strategy patterns. The Builder pattern is used to construct responses, the Adapter pattern integrates an external joke service, and the Decorator pattern adds features like timestamps and emojis. Overall, the diagram shows a modular and easy-to-extend design.
+---
 
 ## 🤝 Cooperation
 
