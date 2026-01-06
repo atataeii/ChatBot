@@ -1,5 +1,7 @@
 # 🤖 Java Console Chatbot — Design Patterns Assignment
 
+Repository Link: https://github.com/atataeii/ChatBot
+
 ✨ A coherent **Java console-based chatbot** built for the Design Patterns assignment.
 
 The chatbot reads user input from the terminal, supports multiple commands and modes, and demonstrates **active usage of multiple design patterns** from different categories (**behavioural**, **creational**, **structural**).
