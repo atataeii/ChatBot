@@ -4,20 +4,17 @@ import chatbot.core.ChatResponse;
 import chatbot.core.ChatResponseBuilder;
 import chatbot.core.Context;
 import chatbot.core.Message;
-import chatbot.state.NormalState;
-import chatbot.state.StudyState;
-import chatbot.state.SupportState;
 
 public class ModeCommand implements Command {
 
     @Override
     public boolean matches(Message msg) {
-        return msg.text().startsWith("/mode");
+        return msg.text().trim().toLowerCase().startsWith("/mode");
     }
 
     @Override
     public ChatResponse execute(Message msg, Context ctx) {
-        String[] parts = msg.text().split(" ");
+        String[] parts = msg.text().trim().split("\\s+");
 
         if (parts.length == 1) {
             return new ChatResponseBuilder()
@@ -25,19 +22,21 @@ public class ModeCommand implements Command {
                     .build();
         }
 
-        switch (parts[1].toLowerCase()) {
-            case "normal" -> ctx.setState(new NormalState());
-            case "study" -> ctx.setState(new StudyState());
-            case "support" -> ctx.setState(new SupportState());
-            default -> {
-                return new ChatResponseBuilder()
-                        .text("Unknown mode.")
-                        .build();
-            }
+        String before = ctx.getState().name();
+
+        // Let the State decide transitions (State pattern)
+        ctx.getState().handle(msg, ctx);
+
+        String after = ctx.getState().name();
+
+        if (before.equals(after) && !parts[1].equalsIgnoreCase(before)) {
+            return new ChatResponseBuilder()
+                    .text("Unknown mode. Try: /mode normal | /mode study | /mode support")
+                    .build();
         }
 
         return new ChatResponseBuilder()
-                .text("Mode switched to " + ctx.getState().name())
+                .text("Mode switched to " + after)
                 .build();
     }
 }

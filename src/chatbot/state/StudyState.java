@@ -1,19 +1,26 @@
 package chatbot.state;
 
+import chatbot.core.Context;
 import chatbot.core.Message;
-import chatbot.strategies.StudyStrategy;
+import chatbot.strategies.NormalStrategy;
+import chatbot.strategies.SupportStrategy;
 
 public class StudyState extends BaseState {
-    public StudyState() {
-        super(new StudyStrategy());
-    }
 
     @Override
-    public ChatState handle(Message msg) {
+    public void handle(Message msg, Context ctx) {
         String text = msg.text().trim().toLowerCase();
-        if (text.equals("/mode normal")) return new NormalState();
-        if (text.equals("/mode support")) return new SupportState();
-        return this;
+
+        if (text.equals("/mode normal")) {
+            ctx.setState(new NormalState());
+            ctx.setStrategy(new NormalStrategy());
+            return;
+        }
+
+        if (text.equals("/mode support")) {
+            ctx.setState(new SupportState());
+            ctx.setStrategy(new SupportStrategy());
+        }
     }
 
     @Override
