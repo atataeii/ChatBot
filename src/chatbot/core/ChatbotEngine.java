@@ -11,7 +11,6 @@ public class ChatbotEngine {
     private final Context context = new Context();
     private final CommandFactory commandFactory = new CommandFactory();
 
-    // Phase 5: Decorator chain
     private final ResponseRenderer renderer =
             new EmojiDecorator(
                     new TimestampDecorator(
@@ -34,7 +33,7 @@ public class ChatbotEngine {
 
             Message msg = new Message(input);
 
-            // 1) Try command first (Factory)
+            // 1) Commands first
             Command cmd = commandFactory.getCommand(msg);
             if (cmd != null) {
                 ChatResponse res = cmd.execute(msg, context);
@@ -42,9 +41,9 @@ public class ChatbotEngine {
                 continue;
             }
 
-            // 2) Otherwise: State + Strategy
-            context.setState(context.getState().handle(msg));
-            ChatResponse res = context.getState().respond(msg);
+            // 2) State decides transitions + Strategy generates response
+            context.getState().handle(msg, context);
+            ChatResponse res = context.getState().respond(msg, context);
             renderer.render(res);
         }
     }
